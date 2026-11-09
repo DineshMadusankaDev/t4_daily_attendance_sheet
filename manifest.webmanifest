@@ -1,0 +1,10 @@
+{
+  "name": "T4 Night Shift Attendance",
+  "short_name": "T4 Attendance",
+  "start_url": "./",
+  "display": "standalone",
+  "background_color": "#f2f5f9",
+  "theme_color": "#10243a",
+  "description": "T4 night shift daily attendance tracker",
+  "icons": []
+}
