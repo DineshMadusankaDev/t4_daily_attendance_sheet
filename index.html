@@ -22,7 +22,7 @@ footer{text-align:center;color:var(--muted);font-size:11px;padding:12px}
 .print-heading{display:none}
 </style></head>
 <body>
-<header><h1> T4 Night Shift – Daily Attendance</h1><p>Night Shift • 18:30 – 06:30 • Fixed manpower list: 26 Labour IDs</p></header>
+<header><h1> T4 Night Shift – Daily Attendance</h1><p>Night Shift • 18:30 – 06:30 • Fixed manpower list: 27 Labour IDs</p></header>
 <main>
 <section class="card entry-card">
 <h2>අද Attendance සටහන් කරන්න</h2>
@@ -44,7 +44,7 @@ footer{text-align:center;color:var(--muted);font-size:11px;padding:12px}
 <footer> T4 Night Shift Attendance • Data is saved in this phone/browser. Export JSON backup regularly.</footer>
 </main>
 <script>
-const IDS=['M91','M92','M101','M102','M108','M120','M135','M154','M164','M172','M191','M210','M211','M228','M230','M234','M238','M243','M255','M343','M345','M351','M356','M358','M367','M368'];
+const IDS=['M91','M92','M101','M102','M108','M120','M135','M154','M155','M164','M172','M191','M201','M211','M228','M240','M234','M238','M243','M255','M343','M345','M351','M356','M358','M367','M368'];
 const KEY='t4_night_attendance_v1';let records=loadData(),current={};
 const $=id=>document.getElementById(id);
 function loadData(){try{return JSON.parse(localStorage.getItem(KEY)||'{}')}catch(e){return {}}}
