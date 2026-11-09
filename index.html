@@ -1,0 +1,73 @@
+<!doctype html>
+<html lang="si">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#10243a"><title>T4 Night Shift Attendance</title>
+<link rel="manifest" href="./manifest.webmanifest">
+<style>
+:root{--navy:#10243a;--blue:#1769aa;--bg:#f2f5f9;--card:#fff;--text:#182536;--muted:#68778a;--line:#dce3eb;--green:#16834b;--red:#c43c43;--amber:#a86b00}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--text);font:15px system-ui,-apple-system,"Noto Sans Sinhala",sans-serif}
+header{background:var(--navy);color:white;padding:18px 16px 20px}header h1{font-size:21px;margin:0 0 4px}header p{margin:0;color:#c8d7e6;font-size:13px}
+main{max-width:920px;margin:auto;padding:14px}.card{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:15px;margin:0 0 14px;box-shadow:0 2px 8px #12243a08}
+h2{font-size:17px;margin:0 0 12px}.row{display:flex;gap:10px;flex-wrap:wrap;align-items:center}.row>*{flex:1}
+label{display:block;font-size:13px;color:var(--muted);margin-bottom:5px}input,select,button{font:inherit}input[type=date]{width:100%;padding:10px;border:1px solid var(--line);border-radius:9px;background:white}
+button{border:0;border-radius:9px;padding:10px 13px;background:var(--blue);color:white;font-weight:650;cursor:pointer}button.secondary{background:#e9eff6;color:var(--navy)}button.green{background:var(--green)}button.red{background:var(--red)}button:disabled{opacity:.45}
+.actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px}.hint{font-size:12px;color:var(--muted);line-height:1.5}.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:8px}.stat{background:#f6f8fb;border:1px solid var(--line);border-radius:10px;padding:10px;text-align:center}.stat b{display:block;font-size:22px}.stat span{font-size:12px;color:var(--muted)}
+.list{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}.person{border:1px solid var(--line);border-radius:10px;padding:10px;display:flex;align-items:center;justify-content:space-between;gap:6px;min-width:0}.id{font-weight:750;font-size:16px;min-width:52px}.choices{display:flex;gap:4px}.choices button{padding:7px 9px;font-size:12px;background:#edf1f5;color:#405166}.choices button.active.p{background:#d8f3e4;color:#12643a}.choices button.active.a{background:#ffe0e0;color:#a3202a}.choices button.active.l{background:#fff0cf;color:#855500}
+.badge{display:inline-block;border-radius:6px;padding:2px 6px;font-size:11px;background:#edf1f5}.saved{color:var(--green);font-size:13px;margin-left:auto}
+table{width:100%;border-collapse:collapse;font-size:13px}th,td{padding:8px;border-bottom:1px solid var(--line);text-align:left}th{background:#f4f7fa}.tablewrap{overflow:auto}
+footer{text-align:center;color:var(--muted);font-size:11px;padding:12px}
+@media(max-width:540px){main{padding:10px}.stats{grid-template-columns:repeat(4,1fr)}.stat{padding:8px 3px}.stat b{font-size:19px}.list{grid-template-columns:1fr}.choices button{padding:8px 11px}.person{padding:9px}}
+@media print{body{background:white;font-size:11px}header{background:white;color:black;padding:0 0 10px}header p{color:#333}main{max-width:none;padding:0}.no-print,.card.entry-card,.card.tools-card,footer{display:none!important}.card{box-shadow:none;border:0;padding:0;margin:0}.print-heading{display:block!important}#printArea{display:block!important}.print-day{page-break-after:always;break-after:page;padding:8mm 4mm}.print-day:last-child{page-break-after:auto}.print-day h2{font-size:17px}.print-day table{font-size:10px}.print-day th,.print-day td{padding:4px;border:1px solid #aaa}.print-summary{margin:8px 0}.print-summary span{display:inline-block;margin-right:18px}}
+.print-heading{display:none}
+</style></head>
+<body>
+<header><h1> T4 Night Shift – Daily Attendance</h1><p>Night Shift • 18:30 – 06:30 • Fixed manpower list: 26 Labour IDs</p></header>
+<main>
+<section class="card entry-card">
+<h2>අද Attendance සටහන් කරන්න</h2>
+<div class="row"><div><label for="workDate">වැඩ කරන දිනය (Shift ආරම්භ වන දිනය)</label><input id="workDate" type="date"></div><div><label>Shift</label><div style="padding:10px 0;font-weight:700">18:30 – 06:30</div></div></div>
+<div class="actions"><button class="secondary" id="allPresent">සියල්ල Present</button><button class="secondary" id="clearAll">සියල්ල හිස් කරන්න</button><span class="saved" id="saveState">Unsaved</span></div>
+<p class="hint">එක් එක් Labour ID එකට Present / Absent / Leave තෝරන්න. පසුව Save Attendance ඔබන්න. එකම දිනය නැවත විවෘත කර වෙනස්කම් update කළ හැක.</p>
+<div class="stats" id="liveStats"><div class="stat"><b id="pCount">0</b><span>Present</span></div><div class="stat"><b id="aCount">0</b><span>Absent</span></div><div class="stat"><b id="lCount">0</b><span>Leave</span></div><div class="stat"><b id="uCount">26</b><span>Not Marked</span></div></div>
+<div style="height:12px"></div><div class="list" id="labourList"></div>
+<div class="actions"><button class="green" id="saveBtn">Save Attendance</button><button id="shareBtn">WhatsApp Summary</button><button class="secondary" id="copyBtn">Copy Summary</button></div>
+</section>
+<section class="card tools-card">
+<h2>Saved Attendance & Reports</h2>
+<div class="row"><div><label for="fromDate">From</label><input type="date" id="fromDate"></div><div><label for="toDate">To</label><input type="date" id="toDate"></div></div>
+<div class="actions"><button id="showReport">View Report</button><button class="secondary" id="printReport">Print Day-by-Day Report</button><button class="secondary" id="exportBtn">Backup Data (JSON)</button><button class="secondary" id="importBtn">Restore Backup</button><input id="importFile" type="file" accept="application/json" hidden></div>
+<p class="hint">සතියකට හෝ මාසයකට අදාළ From / To dates තෝරා View Report හෝ Print කරන්න. Print dialog එකෙන් Save as PDF තෝරා PDF එකක්ද ලබාගත හැක.</p>
+<div id="reportResult"></div>
+</section>
+<div id="printArea" style="display:none"></div>
+<footer> T4 Night Shift Attendance • Data is saved in this phone/browser. Export JSON backup regularly.</footer>
+</main>
+<script>
+const IDS=['M91','M92','M101','M102','M108','M120','M135','M154','M164','M172','M191','M210','M211','M228','M230','M234','M238','M243','M255','M343','M345','M351','M356','M358','M367','M368'];
+const KEY='t4_night_attendance_v1';let records=loadData(),current={};
+const $=id=>document.getElementById(id);
+function loadData(){try{return JSON.parse(localStorage.getItem(KEY)||'{}')}catch(e){return {}}}
+function localDate(d=new Date()){const x=new Date(d.getTime()-d.getTimezoneOffset()*60000);return x.toISOString().slice(0,10)}
+function statuses(){return IDS.map(id=>current[id]||'')}
+function counts(s=statuses()){return {P:s.filter(x=>x==='P').length,A:s.filter(x=>x==='A').length,L:s.filter(x=>x==='L').length,U:s.filter(x=>!x).length}}
+function renderList(){ $('labourList').innerHTML=IDS.map(id=>{let v=current[id]||'';return '<div class="person"><span class="id">'+id+'</span><div class="choices">'+[['P','Present','p'],['A','Absent','a'],['L','Leave','l']].map(([k,t,c])=>'<button class="'+c+(v===k?' active':'')+'" data-id="'+id+'" data-v="'+k+'">'+t+'</button>').join('')+'</div></div>'}).join('');document.querySelectorAll('.choices button').forEach(b=>b.addEventListener('click',()=>{current[b.dataset.id]=current[b.dataset.id]===b.dataset.v?'':b.dataset.v;renderList();updateStats();$('saveState').textContent='Unsaved'}));}
+function updateStats(){let c=counts();$('pCount').textContent=c.P;$('aCount').textContent=c.A;$('lCount').textContent=c.L;$('uCount').textContent=c.U}
+function loadDate(){const d=$('workDate').value;current={};if(records[d]){IDS.forEach(id=>current[id]=records[d].attendance[id]||'');$('saveState').textContent='Saved record loaded'}else $('saveState').textContent='New / Unsaved';renderList();updateStats()}
+function summaryText(d){const r=records[d];if(!r)return '';let c=counts(IDS.map(id=>r.attendance[id]||''));const group=k=>IDS.filter(id=>r.attendance[id]===k).join(', ')||'None';return 'T4 NIGHT SHIFT ATTENDANCE\nDate: '+d+'\nShift: 18:30 – 06:30\nTotal Labour: '+IDS.length+'\nPresent: '+c.P+' ('+group('P')+')\nAbsent: '+c.A+' ('+group('A')+')\nLeave: '+c.L+' ('+group('L')+')\nNot Marked: '+c.U;}
+function save(){let d=$('workDate').value;if(!d){alert('Please select a date');return}if(counts().U){if(!confirm(counts().U+' Labour ID(s) are not marked. Save anyway?'))return}records[d]={attendance:Object.fromEntries(IDS.map(id=>[id,current[id]||''])),updatedAt:new Date().toISOString()};localStorage.setItem(KEY,JSON.stringify(records));$('saveState').textContent='Saved ✓';renderReport();alert('Attendance saved for '+d)}
+function rangeRecords(){let from=$('fromDate').value,to=$('toDate').value;return Object.keys(records).filter(d=>(!from||d>=from)&&(!to||d<=to)).sort()}
+function renderReport(){let dates=rangeRecords();let html='';if(!dates.length){$('reportResult').innerHTML='<p class="hint">මෙම කාලසීමාවට saved attendance records නැත.</p>';return}html='<div class="tablewrap"><table><thead><tr><th>Date</th><th>Present</th><th>Absent</th><th>Leave</th><th>Not marked</th><th></th></tr></thead><tbody>';dates.forEach(d=>{let c=counts(IDS.map(id=>records[d].attendance[id]||''));html+='<tr><td>'+d+'</td><td>'+c.P+'</td><td>'+c.A+'</td><td>'+c.L+'</td><td>'+c.U+'</td><td><button class="secondary" data-open="'+d+'">Open</button></td></tr>'});html+='</tbody></table></div><p class="hint">'+dates.length+' shift record(s)</p>';$('reportResult').innerHTML=html;document.querySelectorAll('[data-open]').forEach(b=>b.onclick=()=>{$('workDate').value=b.dataset.open;loadDate();window.scrollTo({top:0,behavior:'smooth'})})}
+function printReport(){let dates=rangeRecords();if(!dates.length){alert('No saved records for selected dates');return}let out='';dates.forEach(d=>{let r=records[d],c=counts(IDS.map(id=>r.attendance[id]||''));out+='<article class="print-day"><h2>T4 NIGHT SHIFT – DAILY ATTENDANCE</h2><div><b>Date:</b> '+d+' &nbsp; <b>Shift:</b> 18:30 – 06:30</div><div class="print-summary"><span>Present: <b>'+c.P+'</b></span><span>Absent: <b>'+c.A+'</b></span><span>Leave: <b>'+c.L+'</b></span><span>Not Marked: <b>'+c.U+'</b></span></div><table><thead><tr><th>No.</th><th>Labour ID</th><th>Status</th></tr></thead><tbody>';IDS.forEach((id,i)=>{let s=r.attendance[id]||'Not Marked';out+='<tr><td>'+(i+1)+'</td><td>'+id+'</td><td>'+(s==='P'?'PRESENT':s==='A'?'ABSENT':s==='L'?'LEAVE':'NOT MARKED')+'</td></tr>'});out+='</tbody></table><p style="margin-top:20px">Supervisor Signature: ____________________ &nbsp;&nbsp; Checked By: ____________________</p></article>'});$('printArea').innerHTML=out;$('printArea').style.display='block';window.print();$('printArea').style.display='none'}
+$('workDate').value=localDate();$('fromDate').value=localDate(new Date(Date.now()-6*86400000));$('toDate').value=localDate();loadDate();
+$('workDate').addEventListener('change',loadDate);
+$('allPresent').onclick=()=>{IDS.forEach(id=>current[id]='P');renderList();updateStats();$('saveState').textContent='Unsaved'};
+$('clearAll').onclick=()=>{if(confirm('Clear all statuses for this date?')){current={};renderList();updateStats();$('saveState').textContent='Unsaved'}};
+$('saveBtn').onclick=save;$('showReport').onclick=renderReport;$('printReport').onclick=printReport;
+$('copyBtn').onclick=async()=>{let d=$('workDate').value;if(!records[d]){alert('Save attendance first');return}let t=summaryText(d);try{await navigator.clipboard.writeText(t);alert('Summary copied. Paste it in WhatsApp.')}catch(e){prompt('Copy this summary:',t)}};
+$('shareBtn').onclick=()=>{let d=$('workDate').value;if(!records[d]){alert('Save attendance first');return}let t=summaryText(d);if(navigator.share)navigator.share({text:t}).catch(()=>{});else window.open('https://wa.me/?text='+encodeURIComponent(t),'_blank')};
+$('exportBtn').onclick=()=>{let blob=new Blob([JSON.stringify({version:1,labourIds:IDS,records},null,2)],{type:'application/json'});let a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='T4-night-attendance-backup-'+localDate()+'.json';a.click();URL.revokeObjectURL(a.href)};
+$('importBtn').onclick=()=>$('importFile').click();
+$('importFile').onchange=async e=>{let f=e.target.files[0];if(!f)return;try{let obj=JSON.parse(await f.text());let incoming=obj.records||obj;if(!confirm('Restore backup? Existing records with matching dates will be replaced.'))return;records={...records,...incoming};localStorage.setItem(KEY,JSON.stringify(records));renderReport();alert('Backup restored')}catch(err){alert('Invalid backup file')}e.target.value=''};
+if('serviceWorker' in navigator && location.protocol.startsWith('http'))navigator.serviceWorker.register('./sw.js').catch(()=>{});
+</script></body></html>
